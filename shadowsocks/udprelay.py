@@ -230,6 +230,7 @@ class UDPRelay(object):
                     # drop
                     return
             client = socket.socket(af, socktype, proto)
+            client.bind((self._listen_addr, 0))
             client.setblocking(False)
             self._cache[key] = client
             self._client_fd_to_server_addr[client.fileno()] = r_addr

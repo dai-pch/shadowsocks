@@ -153,6 +153,12 @@ class TCPRelayHandler(object):
                  self._server)
         self.last_activity = 0
         self._update_activity()
+        if is_local:
+            self._out_address = config['local_address']
+            # listen_port = config['local_port']
+        else:
+            self._out_address = config['server']
+            # listen_port = config['server_port']
 
     def __hash__(self):
         # default __hash__ is id / 16
@@ -402,6 +408,7 @@ class TCPRelayHandler(object):
                 raise Exception('IP %s is in forbidden list, reject' %
                                 common.to_str(sa[0]))
         remote_sock = socket.socket(af, socktype, proto)
+        remote_sock.bind((self._out_address, 0))
         self._remote_sock = remote_sock
         self._fd_to_handlers[remote_sock.fileno()] = self
         remote_sock.setblocking(False)
